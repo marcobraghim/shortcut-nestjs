@@ -25,7 +25,7 @@ Architecture of the entire backend for a system that take any URL and make it sh
 
 For the main operation which is URL shortening, we will use a simple table ():
 
-| shortcode (PK) | original                              | created_at          |
+| shortcode (PK) | target_url                            | created_at          |
 |----------------|---------------------------------------|---------------------|
 | abc123         | https://www.example.com/very-long-url | 2025-11-05 14:30:00 |
 | xyz789         | https://www.another-site.com/page     | 2025-11-05 14:31:15 |
@@ -41,8 +41,10 @@ Redis INCR Counter starting from 14 milion to make sure that the first shortcode
 ## Project setup
 
 ```bash
-$ npm install
+$ docker compose up -d
 ```
+
+If you looking for continue the development of the project, run the `docker compose up` command without the `nestjs` section to raise up only the `redis` and `postgres` and then continue by running the project locally, just like below.
 
 ## Compile and run the project
 

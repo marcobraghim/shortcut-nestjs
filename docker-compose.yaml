@@ -4,18 +4,19 @@ services:
     container_name: postgres_db
     restart: always
     environment:
-      POSTGRES_USER: ${DB_USER:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
-      POSTGRES_DB: ${DB_NAME:-myapp}
+      POSTGRES_USER: ${SHORTCUT_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${SHORTCUT_DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${SHORTCUT_DB_NAME:-myapp}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -U ${SHORTCUT_DB_USER:-postgres}"]
+      interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 10s
 
   redis:
     image: redis:7-alpine
@@ -38,16 +39,16 @@ services:
     container_name: nestjs_app
     restart: always
     ports:
-      - "3000:3000"
+      - "8080:8080"
     environment:
-      NODE_ENV: ${NODE_ENV:-development}
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_USER: ${DB_USER:-postgres}
-      DB_PASSWORD: ${DB_PASSWORD:-postgres}
-      DB_NAME: ${DB_NAME:-myapp}
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+      SHORTCUT_NODE_ENV: ${SHORTCUT_NODE_ENV:-development}
+      SHORTCUT_DB_HOST: postgres
+      SHORTCUT_DB_PORT: 5432
+      SHORTCUT_DB_USER: ${SHORTCUT_DB_USER:-postgres}
+      SHORTCUT_DB_PASSWORD: ${SHORTCUT_DB_PASSWORD:-postgres}
+      SHORTCUT_DB_NAME: ${SHORTCUT_DB_NAME:-myapp}
+      SHORTCUT_REDIS_HOST: ${SHORTCUT_REDIS_HOST:-redis}
+      SHORTCUT_REDIS_PORT: 6379
     depends_on:
       postgres:
         condition: service_healthy

@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ RUN npm install
 COPY . .
 
 # Expor porta
-EXPOSE 3000
+EXPOSE 8080
 
 # Comando padrão (pode ser sobrescrito no docker-compose)
 CMD ["npm", "run", "start:dev"]

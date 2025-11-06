@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, NotFoundException } from '@nestjs/common';
 import { UrlService } from './url.service';
 import { CreateUrlDto } from './dto/create-url.dto';
 import { UpdateUrlDto } from './dto/update-url.dto';
@@ -17,18 +17,30 @@ export class UrlController {
     return this.urlService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.urlService.findOne(+id);
+  @Get(':shortcode')
+  async findOne(@Param('shortcode') shortcode: string) {
+    const url = await this.urlService.findOne(shortcode);
+    if (!url) {
+      throw new NotFoundException();
+    }
+    return url;
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUrlDto: UpdateUrlDto) {
-    return this.urlService.update(+id, updateUrlDto);
+  @Patch(':shortcode')
+  update(@Param('shortcode') shortcode: string, @Body() updateUrlDto: UpdateUrlDto) {
+    const url = this.urlService.update(shortcode, updateUrlDto);
+    if (!url) {
+      throw new NotFoundException();
+    }
+    return url;
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.urlService.remove(+id);
+  @Delete(':shortcode')
+  @HttpCode(204)
+  async remove(@Param('shortcode') shortcode: string) {
+    const url = await this.urlService.remove(shortcode);
+    if (!url) {
+      throw new NotFoundException();
+    }
   }
 }
